@@ -11,3 +11,4 @@ inherit extrausers
 EXTRA_USERS_PARAMS = "usermod -P 123 emre;"
 
 IMAGE_ROOTFS_EXTRA_SPACE = "5242880"
+DISTRO_FEATURES:append = "wifi"
