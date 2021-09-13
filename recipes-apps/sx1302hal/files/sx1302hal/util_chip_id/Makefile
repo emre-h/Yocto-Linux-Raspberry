@@ -34,11 +34,11 @@ else
 endif
 
 ### Application-specific variables
-APP_NAME := net_downlink
-APP_LIBS := -lparson -lbase64 -lpthread
+APP_NAME := chip_id
+APP_LIBS := -lloragw -lm -ltinymt32 -lrt
 
 ### Environment constants
-LIB_PATH := ../libtools
+LIB_PATH := ../libloragw
 
 ### Expand build options
 CFLAGS := -std=c99 $(WARN_CFLAGS) $(OPT_CFLAGS) $(DEBUG_CFLAGS)
@@ -56,7 +56,9 @@ install:
 ifneq ($(strip $(TARGET_IP)),)
  ifneq ($(strip $(TARGET_DIR)),)
   ifneq ($(strip $(TARGET_USR)),)
-	@cp net_downlink $(TARGET_DIR)
+	@echo "---- Copying chip_id files to $(TARGET_IP):$(TARGET_DIR)"
+	@ssh $(TARGET_USR)@$(TARGET_IP) "mkdir -p $(TARGET_DIR)"
+	@scp chip_id $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
   else
 	@echo "ERROR: TARGET_USR is not configured in target.cfg"
   endif
@@ -72,10 +74,10 @@ $(OBJDIR):
 
 ### Compile main program
 $(OBJDIR)/$(APP_NAME).o: src/$(APP_NAME).c | $(OBJDIR)
-	$(CC) -c $< -o $@ $(CFLAGS) -Iinc -I../libtools/inc
+	$(CC) -c $< -o $@ $(CFLAGS) -Iinc -I../libloragw/inc
 
 ### Link everything together
-$(APP_NAME): $(OBJDIR)/$(APP_NAME).o
-	$(CC) -L$(LIB_PATH) $^ -o $@ $(LDFLAGS) $(APP_LIBS)
+$(APP_NAME): $(OBJDIR)/$(APP_NAME).o $(LIB_PATH)/libloragw.a
+	$(CC) -L$(LIB_PATH) -L../libtools $^ -o $@ $(LDFLAGS) $(APP_LIBS)
 
 ### EOF

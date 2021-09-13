@@ -1,3 +1,5 @@
+### get external defined data
+
 include ../target.cfg
 
 ### User defined build options
@@ -32,11 +34,11 @@ else
 endif
 
 ### Application-specific variables
-APP_NAME := boot
-APP_LIBS := -lloragw -lm -ltinymt32 -lrt -lpthread
+APP_NAME := net_downlink
+APP_LIBS := -lparson -lbase64 -lpthread
 
 ### Environment constants
-LIB_PATH := ../libloragw
+LIB_PATH := ../libtools
 
 ### Expand build options
 CFLAGS := -std=c99 $(WARN_CFLAGS) $(OPT_CFLAGS) $(DEBUG_CFLAGS)
@@ -54,7 +56,9 @@ install:
 ifneq ($(strip $(TARGET_IP)),)
  ifneq ($(strip $(TARGET_DIR)),)
   ifneq ($(strip $(TARGET_USR)),)
-	@cp boot $(TARGET_DIR)
+	@echo "---- Copying net_downlink files to $(TARGET_IP):$(TARGET_DIR)"
+	@ssh $(TARGET_USR)@$(TARGET_IP) "mkdir -p $(TARGET_DIR)"
+	@scp net_downlink $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
   else
 	@echo "ERROR: TARGET_USR is not configured in target.cfg"
   endif
@@ -70,10 +74,10 @@ $(OBJDIR):
 
 ### Compile main program
 $(OBJDIR)/$(APP_NAME).o: src/$(APP_NAME).c | $(OBJDIR)
-	$(CC) -c $< -o $@ $(CFLAGS) -Iinc -I../libloragw/inc
+	$(CC) -c $< -o $@ $(CFLAGS) -Iinc -I../libtools/inc
 
 ### Link everything together
-$(APP_NAME): $(OBJDIR)/$(APP_NAME).o $(LIB_PATH)/libloragw.a
-	$(CC) -L$(LIB_PATH) -L../libtools $^ -o $@ $(LDFLAGS) $(APP_LIBS)
+$(APP_NAME): $(OBJDIR)/$(APP_NAME).o
+	$(CC) -L$(LIB_PATH) $^ -o $@ $(LDFLAGS) $(APP_LIBS)
 
 ### EOF

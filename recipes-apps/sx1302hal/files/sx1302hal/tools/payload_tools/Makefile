@@ -27,12 +27,11 @@ install:
 ifneq ($(strip $(TARGET_IP)),)
  ifneq ($(strip $(TARGET_DIR)),)
   ifneq ($(strip $(TARGET_USR)),)
-	#@echo "---- Copying payload tools files to $(TARGET_IP):$(TARGET_DIR)"
-	#@ssh $(TARGET_USR)@$(TARGET_IP) "mkdir -p $(TARGET_DIR)"
-	@cp payload_crc $(TARGET_DIR)
-	@cp payload_diff $(TARGET_DIR)
-	@cp payload_gen $(TARGET_DIR)
-        
+	@echo "---- Copying payload tools files to $(TARGET_IP):$(TARGET_DIR)"
+	@ssh $(TARGET_USR)@$(TARGET_IP) "mkdir -p $(TARGET_DIR)"
+	@scp payload_crc $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
+	@scp payload_diff $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
+	@scp payload_gen $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
   else
 	@echo "ERROR: TARGET_USR is not configured in target.cfg"
   endif

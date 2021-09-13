@@ -34,8 +34,8 @@ else
 endif
 
 ### Application-specific variables
-APP_NAME := chip_id
-APP_LIBS := -lloragw -lm -ltinymt32 -lrt -lpthread
+APP_NAME := spectral_scan
+APP_LIBS := -lloragw -lm -ltinymt32 -lrt
 
 ### Environment constants
 LIB_PATH := ../libloragw
@@ -56,7 +56,9 @@ install:
 ifneq ($(strip $(TARGET_IP)),)
  ifneq ($(strip $(TARGET_DIR)),)
   ifneq ($(strip $(TARGET_USR)),)
-	@cp chip_id $(TARGET_DIR)
+	@echo "---- Copying spectral_scan files to $(TARGET_IP):$(TARGET_DIR)"
+	@ssh $(TARGET_USR)@$(TARGET_IP) "mkdir -p $(TARGET_DIR)"
+	@scp spectral_scan $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
   else
 	@echo "ERROR: TARGET_USR is not configured in target.cfg"
   endif

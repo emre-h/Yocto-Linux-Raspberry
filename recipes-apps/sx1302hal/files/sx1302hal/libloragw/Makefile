@@ -18,7 +18,7 @@ INCLUDES = $(wildcard inc/*.h) $(wildcard ../libtools/inc/*.h)
 
 ### linking options
 
-LIBS := -lloragw -ltinymt32 -lrt -lpthread -lm
+LIBS := -lloragw -ltinymt32 -lrt -lm
 
 ### general build targets
 
@@ -48,8 +48,9 @@ ifneq ($(strip $(TARGET_IP)),)
  ifneq ($(strip $(TARGET_DIR)),)
   ifneq ($(strip $(TARGET_USR)),)
 	@echo "---- Copying libloragw files to $(TARGET_IP):$(TARGET_DIR)"
-	@cp test_loragw_* $(TARGET_DIR)
-	@cp ../tools/reset_lgw.sh $(TARGET_DIR)
+	@ssh $(TARGET_USR)@$(TARGET_IP) "mkdir -p $(TARGET_DIR)"
+	@scp test_loragw_* $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
+	@scp ../tools/reset_lgw.sh $(TARGET_USR)@$(TARGET_IP):$(TARGET_DIR)
   else
 	@echo "ERROR: TARGET_USR is not configured in target.cfg"
   endif
