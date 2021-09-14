@@ -1,6 +1,6 @@
 require /media/emre/Workspace/yocto/poky/meta/recipes-core/images/core-image-minimal.bb
 
-IMAGE_INSTALL:append = "libstdc++ mtd-utils"
+IMAGE_INSTALL:append = " libstdc++ mtd-utils"
 IMAGE_INSTALL:append = " openssh openssl openssh-sftp-server sudo apt"
 IMAGE_INSTALL:append = " libunwind icu libcurl openssl"
 IMAGE_INSTALL:append = " curl"
